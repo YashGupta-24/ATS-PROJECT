@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["YashGupta-24 <yashgupta.241103@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.12,<3.14"
+pydantic = "^2.11.7"
+uagents = "^0.22.5"
+pymupdf = "^1.26.3"
+spacy = "^3.8.7"
+fastapi = "^0.116.1"
+uvicorn = "^0.35.0"
+google-auth = "^2.40.3"
+google-auth-oauthlib = "^1.2.2"
+google-auth-httplib2 = "^0.2.0"
+google-api-python-client = "^2.177.0"
+python-multipart = "^0.0.20"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

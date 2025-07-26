@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { GlobalWorkerOptions, getDocument } from "pdfjs-dist";
+import { GlobalWorkerOptions } from "pdfjs-dist";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
 import workerUrl from "pdfjs-dist/build/pdf.worker?url";
 
@@ -11,12 +11,16 @@ function Form() {
   const [jd, setJD] = useState("");
   const [pdfText, setPdfText] = useState("");
   const [error, setError] = useState(null);
+  const [matchScore, setMatchScore] = useState(null);
+  const [buttonVisible, setButtonVisible] = useState(true); // NEW
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setError(null);
     setPdfText("");
     setSelectedFile(null);
+    setMatchScore(null);
+    setButtonVisible(true); // Show the button again
 
     if (!file) return;
 
@@ -52,6 +56,36 @@ function Form() {
 
   const handleJdChange = (e) => {
     setJD(e.target.value);
+    setMatchScore(null);
+    setButtonVisible(true); // Show the button again
+  };
+
+  const handleMatchScore = async () => {
+    if (!pdfText || !jd) {
+      alert("Please upload a resume and enter a job description.");
+      return;
+    }
+
+    try {
+      setButtonVisible(false); // Hide the button after click
+
+      const response = await fetch("http://localhost:8080/match", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          resume_text: pdfText,
+          jd: jd,
+        }),
+      });
+
+      const data = await response.json();
+      setMatchScore(data.match_score);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch match score.");
+    }
   };
 
   return (
@@ -85,12 +119,6 @@ function Form() {
                 <strong>Selected:</strong> {selectedFile.name}
               </div>
             )}
-            {/* {pdfText && (
-              <div className="mt-2 max-h-56 overflow-y-auto border p-2 bg-gray-50 rounded text-xs text-left whitespace-pre-wrap">
-                <strong>PDF Text:</strong>
-                <div>{pdfText}</div>
-              </div>
-            )} */}
             {error && <div className="mt-2 text-red-600">Error: {error}</div>}
           </div>
 
@@ -106,9 +134,22 @@ function Form() {
           </div>
         </div>
       </div>
-      <div className="h-fit w-1/2 border-[1px] border-blue-700 rounded-xl p-4 text-center cursor-pointer hover:bg-blue-700 hover:text-white">
-        Match Score
-      </div>
+
+      {buttonVisible && (
+        <div
+          onClick={handleMatchScore}
+          className="h-fit w-1/2 border-[1px] border-blue-700 rounded-xl p-4 text-center cursor-pointer hover:bg-blue-700 hover:text-white"
+          id="match_button"
+        >
+          Match Score
+        </div>
+      )}
+
+      {matchScore !== null && (
+        <div className="mt-4 w-1/2 p-4 border rounded bg-gray-100 text-center">
+          <p><strong>Match Score:</strong> {matchScore}/100</p>
+        </div>
+      )}
     </div>
   );
 }

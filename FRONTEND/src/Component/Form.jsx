@@ -3,7 +3,6 @@ import { GlobalWorkerOptions } from "pdfjs-dist";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
 import workerUrl from "pdfjs-dist/build/pdf.worker?url";
 
-// Set correct workerSrc
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
 
 function Form() {
@@ -12,7 +11,7 @@ function Form() {
   const [pdfText, setPdfText] = useState("");
   const [error, setError] = useState(null);
   const [matchScore, setMatchScore] = useState(null);
-  const [buttonVisible, setButtonVisible] = useState(true); // NEW
+  const [buttonVisible, setButtonVisible] = useState(true); 
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -20,7 +19,7 @@ function Form() {
     setPdfText("");
     setSelectedFile(null);
     setMatchScore(null);
-    setButtonVisible(true); // Show the button again
+    setButtonVisible(true); 
 
     if (!file) return;
 
@@ -57,7 +56,7 @@ function Form() {
   const handleJdChange = (e) => {
     setJD(e.target.value);
     setMatchScore(null);
-    setButtonVisible(true); // Show the button again
+    setButtonVisible(true); 
   };
 
   const handleMatchScore = async () => {
@@ -67,7 +66,7 @@ function Form() {
     }
 
     try {
-      setButtonVisible(false); // Hide the button after click
+      setButtonVisible(false); 
 
       const response = await fetch("http://localhost:8080/match", {
         method: "POST",
@@ -129,7 +128,6 @@ function Form() {
               placeholder="Software Engineering Intern Position"
               value={jd}
               onChange={handleJdChange}
-              required
             ></textarea>
           </div>
         </div>

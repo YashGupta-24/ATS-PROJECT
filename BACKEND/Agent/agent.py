@@ -17,15 +17,7 @@ class Request(Model):
 class Response(Model):
     match_score:str
 
-class ASI1miniRequest(Model):
-    query: str
-
-class ASI1miniResponse(Model):
-    response: str
-
 agent=Agent(name="Resume JD Match", seed="ResumeJd", port=8080, endpoint="https://localhost:8080/submit")
-
-# llm_agent='agent1qvn0t4u5jeyewp9l544mykv639szuhq8dhmatrgfuwqphx20n8jn78m9paa'
 
 fund_agent_if_low(agent.wallet.address()) #type:ignore
 
@@ -49,7 +41,6 @@ Return only a single integer between 0 and 100 representing the match score. Do 
 
 def generate_with_together(final_prompt:str) -> str:
     try:
-        # final_prompt=GENERATE_PROMPT_STRING.format(query=query, language=language)
         response = client.chat.completions.create(
             model="Qwen/Qwen2.5-Coder-32B-Instruct",
             messages=[

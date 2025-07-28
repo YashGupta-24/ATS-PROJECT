@@ -17,6 +17,9 @@ class Request(Model):
 class Response(Model):
     match_score:str
 
+class TestResponse(Model):
+    status:str
+
 agent=Agent(name="Resume JD Match", seed="ResumeJd", port=8080, endpoint="https://localhost:8080/submit")
 
 fund_agent_if_low(agent.wallet.address()) #type:ignore
@@ -56,6 +59,10 @@ def generate_with_together(final_prompt:str) -> str:
         return "Unable to generate a response."
     except Exception as e:
         return f"Error occurred: {str(e)}"
+
+@agent.on_rest_get("/", TestResponse)
+async def check(ctx:Context)->TestResponse:
+    return TestResponse(status="Hello, I am live!")
 
 @agent.on_rest_post("/match", Request, Response)
 async def match(ctx:Context, msg:Request)->Response:

@@ -1,14 +1,11 @@
 from uagents import Agent, Context, Model
 from uagents.setup import fund_agent_if_low
-from together import Together
+from google import genai
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
-
-os.environ["TOGETHER_API_KEY"] = os.getenv("TOGETHER_API_KEY") #type:ignore
-
-client = Together()
+client=genai.Client()
 
 class Request(Model):
     resume_text:str
@@ -44,19 +41,13 @@ Return only a single integer between 0 and 100 representing the match score. Do 
 
 def generate_with_together(final_prompt:str) -> str:
     try:
-        response = client.chat.completions.create(
-            model="Qwen/Qwen2.5-Coder-32B-Instruct",
-            messages=[
-                {
-                    "role": "user",
-                    "content": final_prompt
-                }
-            ],
-            stream=False  
+        print("Sending data to Gemini")
+        response=client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=final_prompt
         )
-        if hasattr(response, 'choices'):
-            return response.choices[0].message.content #type:ignore
-        return "Unable to generate a response."
+        print("Got a response from gemini")
+        return response.text[0] #type:ignore
     except Exception as e:
         return f"Error occurred: {str(e)}"
 

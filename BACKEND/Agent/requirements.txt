@@ -1,3 +1,4 @@
 uagents
 python-dotenv
 together
+google-genai

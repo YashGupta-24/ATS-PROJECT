@@ -41,12 +41,10 @@ Return only a single integer between 0 and 100 representing the match score. Do 
 
 def generate_with_together(final_prompt:str) -> str:
     try:
-        print("Sending data to Gemini")
         response=client.models.generate_content(
             model="gemini-2.5-flash",
             contents=final_prompt
         )
-        print("Got a response from gemini")
         return response.text[0] #type:ignore
     except Exception as e:
         return f"Error occurred: {str(e)}"
@@ -57,10 +55,10 @@ async def check(ctx:Context)->TestResponse:
 
 @agent.on_rest_post("/match", Request, Response)
 async def match(ctx:Context, msg:Request)->Response:
-    ctx.logger.info("Data Received. Sending it to Qwen for evaluating.")
+    ctx.logger.info("Data Received. Sending it to Gemini for evaluating.")
     final_query = prompt.format(resume=msg.resume_text, description= msg.jd)
     res = generate_with_together(final_query)
-    ctx.logger.info(f"Data Received from Qwen: {res}")
+    ctx.logger.info(f"Data Received from Gemini: {res}")
     return Response(match_score=res)
 
 if __name__=="__main__":
